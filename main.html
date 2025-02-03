@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ATC Scenario Simulator - Web Edition</title>
+  
+  <!-- Stijl via CSS in de <style>-tag (voor het gemak) -->
+  <style>
+    /* Globale reset en font */
+    * {
+      margin: 0; 
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f2f2f2;
+      color: #333;
+    }
+
+    header {
+      background: url("https://images.unsplash.com/photo-1474204075012-7e7b60b75b99?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80");
+      background-size: cover;
+      background-position: center;
+      padding: 40px 20px;
+      text-align: center;
+      color: #fff;
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+
+    header p {
+      font-size: 1.2rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+    }
+
+    main {
+      max-width: 800px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .progress-bar {
+      width: 100%;
+      background: #eee;
+      border-radius: 4px;
+      height: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #4b79a1, #283e51);
+      transition: width 0.4s ease;
+    }
+
+    .scenario-image {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin: 10px 0;
+    }
+
+    .scenario-title {
+      font-size: 1.5rem;
+      margin: 10px 0;
+      color: #222;
+    }
+
+    .scenario-question {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .option-btn {
+      background: #4b79a1;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 1rem;
+    }
+
+    .option-btn:hover {
+      background: #3b5f7c;
+    }
+
+    .next-scenario-btn {
+      background: #283e51;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .next-scenario-btn:hover {
+      background: #1f2f3d;
+    }
+
+    /* Modal-styling (pop-up met resultaat) */
+    .modal-bg {
+      position: fixed; 
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal {
+      background: #fff;
+      width: 90%;
+      max-width: 500px;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .modal h2 {
+      margin-bottom: 10px;
+    }
+
+    .modal p {
+      margin-bottom: 20px;
+    }
+
+    .close-modal-btn {
+      background: #4b79a1;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .close-modal-btn:hover {
+      background: #3b5f7c;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Eind-boodschap style */
+    .end-screen {
+      text-align: center;
+      padding: 50px;
+    }
+
+    .end-screen h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .end-screen p {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .restart-btn {
+      background: #4b79a1;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .restart-btn:hover {
+      background: #3b5f7c;
+    }
+
+    footer {
+      text-align: center;
+      margin: 20px 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>ATC Scenario Simulator</h1>
+  <p>Beleef 10 chaos-scenario’s als luchtverkeersleider!</p>
+</header>
+
+<main id="main-content">
+  <!-- Progress bar -->
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+
+  <img id="scenario-image" class="scenario-image" src="" alt="Scenario Image" />
+
+  <h2 class="scenario-title" id="scenario-title"></h2>
+  <p class="scenario-question" id="scenario-question"></p>
+
+  <div class="options-container" id="options-container">
+    <!-- Dynamisch aangemaakte knoppen komen hier -->
+  </div>
+
+  <button class="next-scenario-btn" id="next-btn">Volgend scenario &gt;</button>
+</main>
+
+<!-- Modal voor resultaat -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h2 id="modal-title">Gevolg</h2>
+    <p id="modal-text"></p>
+    <button class="close-modal-btn" id="close-modal-btn">OK</button>
+  </div>
+</div>
+
+<!-- Eindscherm (verstopt tot we klaar zijn) -->
+<div id="end-screen" class="hidden end-screen">
+  <h2>Je hebt alle scenario’s doorlopen!</h2>
+  <p>Hopelijk heb je het luchtruim nog een beetje onder controle gehouden ;)  
+     Wil je opnieuw beginnen? Klik dan op de knop hieronder!</p>
+  <button class="restart-btn" onclick="restart()">Opnieuw Beginnen</button>
+</div>
+
+<footer>
+  Gemaakt met ♥ door ChatGPT (en een beetje jou). 
+</footer>
+
+<script>
+  // We zetten hier onze scenario's (incl. images) in een array of objects:
+  const scenarios = [
+    {
+      title: "Scenario 1: Paniek in de cockpit",
+      question: "Vliegtuig A meldt plots dat de brandstofmeter raar doet. Wat doe je?",
+      options: [
+        {
+          answer: "Direct laten landen, safety first!",
+          result: "Je voorkomt een groter probleem, maar de rest moet wachten."
+        },
+        {
+          answer: "Nog even laten cirkelen, misschien valt het mee.",
+          result: "Straks valt de motor uit... da’s wel risicovol."
+        }
+      ],
+      image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    },
+    {
+      title: "Scenario 2: Dikke mist",
+      question: "Er trekt een enorme mistbank over de baan. Bijna niemand kan iets zien!",
+      options: [
+        {
+          answer: "Stop alle vluchten en wacht tot het opklaart.",
+          result: "Superveilig, maar enorme vertragingen. Passagiers not so happy."
+        },
+        {
+          answer: "Laat toestellen met geavanceerde apparatuur gewoon landen.",
+          result: "Scheelt tijd, maar wat als het toch misgaat?"
+        }
+      ],
+      image: "https://images.unsplash.com/photo-1561933250-7c2f6f0117d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    },
+    {
+      title: "Scenario 3: Spoedlanding privéjet",
+      question: "Een fancy privéjet vraagt een noodlanding aan, brandstof op.",
+      options: [
+        {
+          answer: "Meteen voorrang geven boven alle passagiersvluchten.",
+          result: "Tja, zo’n jet is gered, maar boze luchtvaartmaatschappijen inbound."
+        },
+        {
+          answer: "Laten uitwijken naar een kleinere luchthaven verderop.",
+          result: "Kan werken, tenzij ze echt op de laatste druppel brandstof zitten..."
+        }
+      ],
+      image: "https://images.unsplash.com/photo-1595171909583-98d7d6f1b5cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    },
+    {
+      title: "Scenario 4: Zieke passagier",
+      question: "Een passagier is flauwgevallen en moet asap naar een ziekenhuis. Wat nu?",
+      options: [
+        {
+          answer: "Laat het vliegtuig meteen landen en ambulance klaarzetten.",
+          result: "Misschien red je iemands leven, wel verstoring voor anderen."
+        },
+        {
+          answer: "Gewoon in de normale landingsvolgorde, duurt iets langer...",
+          result: "Hopelijk kan de crew het passagiercomfort hoog houden."
+        }
+      ],
+      image: "https://images.unsplash.com/photo-1523473827537-2f97a09bb969?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    },
+    {
+      title: "Scenario 5: Radar gone crazy",
+      question: "Je radar werkt niet meer. Alleen radio is nog beschikbaar!",
+      options: [
+        {
+          answer: "Alle vliegtuigen in holding-patroon, geen risico nemen.",
+          result: "Lekker veilig, maar huge chaos in de lucht en veel vertraging."
+        },
+        {
+          answer: "Vertrouw op handmatige posities en werk met checklists.",
+          result: "Best stressvol, maar wel werkbaar als je het onder controle hebt."
+        }
+      ],
+      image: "https://images.unsplash.com/photo-1505444024819-5c56b6e3e1c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    },
+    {
+      title: "Scenario 6: Megadrukte tijdens de spits",
+      question: "De vertrekhal staat vol en toestellen willen allemaal weg. Hoe regel je dat?",
+      options: [
+        {
+          answer: "Zo snel mogelijk toestaan op te stijgen, minuscule pauzes tussendoor.",
+          result: "Je ruimt de rij op, maar wel gevaarlijk als er te weinig afstand is."
+        },
+        {
+          answer: "Strikte veiligheidsmarges hanteren, helaas langere wachtrijen.",
+          result: "Iedereen blijft safe, maar dat wordt wel zeuren voor de reizigers."
+        }
+      ],
+      image: "https://images.unsplash.com/photo-1519337529127-14e8e36ab6c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    },
+    {
+      title: "Scenario 7: Militair toestel met spoed",
+      question: "Een militair vliegtuig wil direct landen, bevel van hogerhand.",
+      options: [
+        {
+          answer: "Meteen alle burgervluchten stoppen, militair gaat voor.",
+          result: "Strak geregeld, maar passagiersvliegtuigen lopen vertraging op."
+        },
+        {
+          answer: "Probeer het toestel te laten landen op een aparte baan/route.",
+          result: "Handig als je de capaciteit hebt, kost wel wat extra coördinatie."
+        }
+      ],
+      image: "https://images.unsplash.com/photo-1572343700717-8b98a27d2180?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    },
+    {
+      title: "Scenario 8: Onweer incoming",
+      question: "Donkere wolken, bliksem overal. Wat nu?",
+      options: [
+        {
+          answer: "Vliegveld tijdelijk sluiten. Safety first.",
+          result: "Geen crashes door bliksem, maar mega files in de lucht."
+        },
+        {
+          answer: "Door laten gaan, maar wel elke landing extra checken.",
+          result: "Kan tijd besparen, maar als het misgaat, is de ramp groot."
+        }
+      ],
+      image: "https://images.unsplash.com/photo-1510760782654-4b7daf3a7044?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    },
+    {
+      title: "Scenario 9: Hydraulische problemen",
+      question: "Toestel meldt lekkende hydraulische vloeistof. Mogelijk noodlanding.",
+      options: [
+        {
+          answer: "Noodplan aan: brandweer, ambulance, alles paraat!",
+          result: "Veiligheid top, maar ook grote onrust bij andere toestellen."
+        },
+        {
+          answer: "Laat het vliegtuig boven zee rondjes vliegen om te checken of er nog druk is.",
+          result: "Als het goed gaat, heb je tijd gekocht. Zo niet... oeps."
+        }
+      ],
+      image: "https://images.unsplash.com/photo-1537222934199-8cd3d1ebbaf3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    },
+    {
+      title: "Scenario 10: Vliegtuig spoorloos",
+      question: "Eén vliegtuig is ineens van de radar. Radio silent. Wat nu?",
+      options: [
+        {
+          answer: "Meteen noodoproep en reddingsteams inschakelen.",
+          result: "Misschien vals alarm, maar je speelt wel op safe."
+        },
+        {
+          answer: "Even wachten en opnieuw oproepen, misschien storing.",
+          result: "Kan stress besparen, maar je verliest kostbare tijd als ‘t echt mis is."
+        }
+      ],
+      image: "https://images.unsplash.com/photo-1585508889209-46dcc56ef149?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+    }
+  ];
+
+  let currentIndex = 0;
+
+  // Elementen ophalen
+  const mainContent = document.getElementById('main-content');
+  const scenarioImage = document.getElementById('scenario-image');
+  const scenarioTitle = document.getElementById('scenario-title');
+  const scenarioQuestion = document.getElementById('scenario-question');
+  const optionsContainer = document.getElementById('options-container');
+  const nextBtn = document.getElementById('next-btn');
+  const progressFill = document.getElementById('progress-fill');
+  const endScreen = document.getElementById('end-screen');
+
+  // Modal elementen
+  const modalBg = document.getElementById('modal-bg');
+  const modalTitle = document.getElementById('modal-title');
+  const modalText = document.getElementById('modal-text');
+  const closeModalBtn = document.getElementById('close-modal-btn');
+
+  // Init
+  loadScenario(currentIndex);
+
+  nextBtn.addEventListener('click', function(){
+    currentIndex++;
+    if(currentIndex < scenarios.length) {
+      loadScenario(currentIndex);
+    } else {
+      // Einde
+      mainContent.classList.add('hidden');
+      endScreen.classList.remove('hidden');
+    }
+  });
+
+  closeModalBtn.addEventListener('click', () => {
+    modalBg.style.display = 'none';
+  });
+
+  // Functie om een scenario te laden
+  function loadScenario(index) {
+    const scenario = scenarios[index];
+    scenarioImage.src = scenario.image;
+    scenarioTitle.textContent = scenario.title;
+    scenarioQuestion.textContent = scenario.question;
+
+    // Progress bar update
+    const progressPercentage = ((index) / scenarios.length) * 100;
+    progressFill.style.width = progressPercentage + '%';
+
+    // Oude knoppen weghalen
+    optionsContainer.innerHTML = '';
+
+    // Nieuwe knoppen maken
+    scenario.options.forEach(option => {
+      const btn = document.createElement('button');
+      btn.classList.add('option-btn');
+      btn.textContent = option.answer;
+      btn.addEventListener('click', () => {
+        openModal(option.result);
+      });
+      optionsContainer.appendChild(btn);
+    });
+
+    // Als je bij het laatste scenario bent, verander de tekst van de knop
+    if(index === scenarios.length - 1) {
+      nextBtn.textContent = "Klaar!";
+    } else {
+      nextBtn.textContent = "Volgend scenario >";
+    }
+  }
+
+  function openModal(resultText) {
+    modalText.textContent = resultText;
+    modalBg.style.display = 'flex';
+  }
+
+  // Herstart-functie voor de “Opnieuw Beginnen”-knop op eindscherm
+  function restart() {
+    currentIndex = 0;
+    endScreen.classList.add('hidden');
+    mainContent.classList.remove('hidden');
+    loadScenario(currentIndex);
+  }
+
+  // Hang 'm aan window, zodat de HTML-button (onClick) het kan gebruiken
+  window.restart = restart;
+</script>
+
+</body>
+</html>
