@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nederlands creatieve opdracht Luchtverkeersleiding</title>
+  
+  <style>
+    /* Globale reset en font */
+    * {
+      margin: 0; 
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f2f2f2;
+      color: #333;
+    }
+
+    header {
+      background: url("https://images.unsplash.com/photo-1474204075012-7e7b60b75b99?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80");
+      background-size: cover;
+      background-position: center;
+      padding: 40px 20px;
+      text-align: center;
+      color: #fff;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+
+    header p {
+      font-size: 1.2rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+    }
+
+    .scoreboard {
+      display: flex;
+      justify-content: space-around;
+      background: #fff;
+      max-width: 800px;
+      margin: 20px auto 0 auto;
+      padding: 10px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      animation: fadeIn 0.8s ease;
+    }
+    .scoreboard p {
+      font-size: 1rem;
+      margin: 0;
+    }
+    .scoreboard span {
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 800px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .progress-bar {
+      width: 100%;
+      background: #eee;
+      border-radius: 4px;
+      height: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #4b79a1, #283e51);
+      transition: width 0.4s ease;
+    }
+
+    .scenario-image {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 6px;
+      margin: 10px 0;
+    }
+
+    .scenario-title {
+      font-size: 1.5rem;
+      margin: 10px 0;
+      color: #222;
+    }
+
+    .scenario-question {
+      font-size: 1rem;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .option-btn {
+      background: #4b79a1;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 1rem;
+    }
+
+    .option-btn:hover {
+      background: #3b5f7c;
+    }
+
+    /* Modal-styling (pop-up) */
+    .modal-bg {
+      position: fixed; 
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal {
+      background: #fff;
+      width: 90%;
+      max-width: 500px;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .modal h2 {
+      margin-bottom: 10px;
+    }
+
+    .modal p {
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .close-modal-btn {
+      background: #4b79a1;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .close-modal-btn:hover {
+      background: #3b5f7c;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .end-screen {
+      text-align: center;
+      padding: 50px;
+    }
+
+    .end-screen h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .end-screen p {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .restart-btn {
+      background: #4b79a1;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .restart-btn:hover {
+      background: #3b5f7c;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Luchtverkeersleiding simulator jaartaak</h1>
+  <p>Gemaakt door Noah Rodriguez 4NW3</p>
+</header>
+
+<!-- Scoreboard -->
+<div class="scoreboard">
+  <p>Dode mensen ❌: <span id="died-count">0</span></p>
+  <p>Boze mensen ⚪: <span id="angry-count">0</span></p>
+  <p>Blije mensen ✅: <span id="happy-count">0</span></p>
+</div>
+
+<main id="main-content">
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill"></div>
+  </div>
+
+  <img id="scenario-image" class="scenario-image" src="" alt="Scenario Image" />
+
+  <h2 class="scenario-title" id="scenario-title"></h2>
+  <p class="scenario-question" id="scenario-question"></p>
+
+  <div class="options-container" id="options-container">
+    <!-- Knoppen komen hier via JS -->
+  </div>
+</main>
+
+<!-- Modal voor gevolgen -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h2 id="modal-title">Gevolg</h2>
+    <p id="modal-text"></p>
+    <button class="close-modal-btn" id="close-modal-btn">OK</button>
+  </div>
+</div>
+
+<!-- Eindscherm -->
+<div id="end-screen" class="hidden end-screen">
+  <h2>Je hebt alle scenario’s doorlopen!</h2>
+  <p id="end-result-text">
+    <!-- Hier tonen we later de eindstatistieken -->
+  </p>
+  <button class="restart-btn" onclick="restart()">Opnieuw Beginnen</button>
+</div>
+
+<script>
+  /*
+    We hebben drie counters:
+    - diedCount (doden) => ❌
+    - angryCount (boze mensen) => ⚪
+    - happyCount (blije/geredde mensen) => ✅
+
+    EN: failCount telt hoe vaak je een 'dodelijk' scenario kiest. Bij 3 fails moet je herstarten.
+  */
+
+  let diedCount = 0;
+  let angryCount = 0;
+  let happyCount = 0;
+  let failCount = 0;
+
+  const scenarios = [
+    {
+      title: "Situatie 1: Brandstof",
+      question: "Vlucht SN485 meldt dat de brandstofmeter fout zit. Hoe reageer je?",
+      image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      options: [
+        {
+          answer: "Laat het vliegtuig direct landen.",
+          result: "Je voorkomt een mogelijk groot probleem, maar andere vluchten raken vertraagd.",
+          stats: {
+            died: 0,        // Geen doden
+            angry: 50,      // 50 boze passagiers van andere vertraagde toestellen
+            happy: 120      // De inzittenden van SN485 blij omdat ze veilig landen
+          }
+        },
+        {
+          answer: "Laat het vliegtuig nog cirkelen.",
+          result: "Als de meting klopt, kan er een ernstige crash ontstaan.",
+          stats: {
+            died: 120,      // De vlucht stort neer
+            angry: 0,
+            happy: 0
+          }
+        }
+      ]
+    },
+    {
+      title: "Situatie 2: Mist",
+      question: "Er is een zeer drukke mist rond de luchthaven, wat doe je?",
+      image: "https://images.unsplash.com/photo-1561933250-7c2f6f0117d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      options: [
+        {
+          answer: "Stop alle vluchten tot het zicht beter is.",
+          result: "Zeer veilig, maar je krijgt vertragingen en boze reizigers.",
+          stats: {
+            died: 0,
+            angry: 200,
+            happy: 0
+          }
+        },
+        {
+          answer: "Laat vliegtuigen met instrumenten landen.",
+          result: "Het kan fout gaan in de mist en zorgen voor een crash.",
+          stats: {
+            died: 30,
+            angry: 0,
+            happy: 0
+          }
+        }
+      ]
+    },
+    {
+      title: "Situatie 3: privéjet noodgeval",
+      question: "Een luxe privéjet heeft bijna geen brandstof en vraagt dringend een noodlanding.",
+      image: "https://images.unsplash.com/photo-1595171909583-98d7d6f1b5cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      options: [
+        {
+          answer: "Geef voorrang boven alle passagiersvluchten.",
+          result: "Je redt de privéjet, maar luchtvaartmaatschappijen gaan klagen.",
+          stats: {
+            died: 0,
+            angry: 200,  // boze passagiers omdat vluchten uitgesteld worden
+            happy: 2     // de mensen in de privéjet
+          }
+        },
+        {
+          answer: "Verwijs het toestel naar een kleiner vliegveld.",
+          result: "Als de brandstof op is voor ze daar zijn, kan het crashen.",
+          stats: {
+            died: 4,
+            angry: 0,
+            happy: 0
+          }
+        }
+      ]
+    },
+    {
+      title: "Situatie 4: Medisch noodgeval",
+      question: "Aan boord van een passagiersvliegtuig is iemand onwel geworden en heeft snel medische hulp nodig.",
+      image: "https://images.unsplash.com/photo-1523473827537-2f97a09bb969?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      options: [
+        {
+          answer: "Geef direct prioriteit aan landing en bel de hulpdiensten.",
+          result: "Je kunt een leven redden, maar andere vliegtuigen moeten wachten.",
+          stats: {
+            died: 0,
+            angry: 40,
+            happy: 1
+          }
+        },
+        {
+          answer: "Laat het vliegtuig normaal landen.",
+          result: "De patiënt kan overlijden omdat het te lang duurt.",
+          stats: {
+            died: 1,
+            angry: 0,
+            happy: 0
+          }
+        }
+      ]
+    },
+    {
+      title: "Situatie 5: Radars kapot",
+      question: "Je radarsystemen werken niet meer. Je hebt alleen nog radioverbinding met de piloten.",
+      image: "https://images.unsplash.com/photo-1505444024819-5c56b6e3e1c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      options: [
+        {
+          answer: "Laat geen toestellen landen tot de radar weer online is.",
+          result: "Zeer veilig, maar enorme wachttijden en boze maatschappijen.",
+          stats: {
+            died: 0,
+            angry: 300,
+            happy: 0
+          }
+        },
+        {
+          answer: "Werk met fysieke kaarten en vraag regelmatige positie-updates.",
+          result: "Er is risico op botsingen in de lucht.",
+          stats: {
+            died: 150,
+            angry: 0,
+            happy: 0
+          }
+        }
+      ]
+    },
+    {
+      title: "Situatie 6: Overvolle luchthaven",
+      question: "De vertrekhal is vol en elk vliegtuig wil snel in de lucht. Wat doe je?",
+      image: "https://images.unsplash.com/photo-1519337529127-14e8e36ab6c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      options: [
+        {
+          answer: "Laat ze allemaal kort na elkaar opstijgen.",
+          result: "Risico dat vliegtuigen te dicht op elkaar zitten en een botsing veroorzaken.",
+          stats: {
+            died: 200,
+            angry: 0,
+            happy: 0
+          }
+        },
+        {
+          answer: "Strikte veiligheidsafstand, zelfs bij drukte.",
+          result: "Veiliger, maar reizigers klagen over lange wachttijden.",
+          stats: {
+            died: 0,
+            angry: 100,
+            happy: 0
+          }
+        }
+      ]
+    },
+    {
+      title: "Situatie 7: Militaire situatie",
+      question: "Een militair vliegtuig heeft prioriteit gevraagd. Het wil meteen landen.",
+      image: "https://images.unsplash.com/photo-1572343700717-8b98a27d2180?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      options: [
+        {
+          answer: "Geef direct voorrang en stop al het andere verkeer.",
+          result: "Je volgt het militaire bevel, maar veel passagiers raken ontevreden.",
+          stats: {
+            died: 0,
+            angry: 300,
+            happy: 0
+          }
+        },
+        {
+          answer: "Laat het militair vliegtuig via een andere route landen.",
+          result: "Minder impact op de andere vluchten, maar meer coördinatiewerk nodig.",
+          stats: {
+            died: 0,
+            angry: 50,
+            happy: 0
+          }
+        }
+      ]
+    },
+    {
+      title: "Situatie 8: Onweer",
+      question: "Donkere wolken vol bliksem boven de luchthaven. Wat doe je?",
+      image: "https://images.unsplash.com/photo-1510760782654-4b7daf3a7044?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      options: [
+        {
+          answer: "Sluit de luchthaven tijdelijk totdat het weer goed weer is.",
+          result: "Je voorkomt ongelukken, maar er is grote vertraging.",
+          stats: {
+            died: 0,
+            angry: 150,
+            happy: 0
+          }
+        },
+        {
+          answer: "Doe verder met vluchten, maar houd strenge regels.",
+          result: "Blikseminslag kan toestellen raken, risico op crashes.",
+          stats: {
+            died: 70,
+            angry: 0,
+            happy: 0
+          }
+        }
+      ]
+    },
+    {
+      title: "Scenario 9: Hydraulische problemen",
+      question: "Een toestel meldt dat de hydraulische druk wegvalt en mogelijk een noodlanding moet maken.",
+      image: "https://images.unsplash.com/photo-1537222934199-8cd3d1ebbaf3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      options: [
+        {
+          answer: "Start meteen een noodplan en zet brandweer en ambulance klaar.",
+          result: "De veiligheid is hoog, maar je zorgt voor onrust bij andere vluchten.",
+          stats: {
+            died: 0,
+            angry: 50,
+            happy: 0
+          }
+        },
+        {
+          answer: "Laat het vliegtuig een extra ronde vliegen om te zien of het systeem stabiliseert.",
+          result: "Als het mislukt, is een crash onvermijdelijk.",
+          stats: {
+            died: 130,
+            angry: 0,
+            happy: 0
+          }
+        }
+      ]
+    },
+    {
+      title: "Situatie 10: Verdwijnsel",
+      question: "Een vliegtuig verdwijnt plotseling van de radar en er komt geen reactie op de radio.",
+      image: "https://images.unsplash.com/photo-1585508889209-46dcc56ef149?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      options: [
+        {
+          answer: "Stuur reddingsteams en verwittig de maatschappij.",
+          result: "Misschien vals alarm, maar je bent wel veilig bezig.",
+          stats: {
+            died: 0,
+            angry: 50,
+            happy: 0
+          }
+        },
+        {
+          answer: "Wacht kort en probeer opnieuw contact te maken.",
+          result: "Als het echt misgaat, verlies je kostbare minuten en er kan een crash zijn.",
+          stats: {
+            died: 120,
+            angry: 0,
+            happy: 0
+          }
+        }
+      ]
+    }
+  ];
+
+  let currentIndex = 0;
+
+  // Elementen ophalen
+  const mainContent = document.getElementById('main-content');
+  const scenarioImage = document.getElementById('scenario-image');
+  const scenarioTitle = document.getElementById('scenario-title');
+  const scenarioQuestion = document.getElementById('scenario-question');
+  const optionsContainer = document.getElementById('options-container');
+  const progressFill = document.getElementById('progress-fill');
+  const endScreen = document.getElementById('end-screen');
+  const endResultText = document.getElementById('end-result-text');
+
+  // Scoreboard elementen
+  const diedCountSpan = document.getElementById('died-count');
+  const angryCountSpan = document.getElementById('angry-count');
+  const happyCountSpan = document.getElementById('happy-count');
+
+  // Modal elementen
+  const modalBg = document.getElementById('modal-bg');
+  const modalTitle = document.getElementById('modal-title');
+  const modalText = document.getElementById('modal-text');
+  const closeModalBtn = document.getElementById('close-modal-btn');
+
+  // Bij opstarten: eerste scenario laden
+  loadScenario(currentIndex);
+
+  closeModalBtn.addEventListener('click', () => {
+    modalBg.style.display = 'none';
+    goToNextScenario();
+  });
+
+  function loadScenario(index) {
+    const scenario = scenarios[index];
+    scenarioImage.src = scenario.image;
+    scenarioTitle.textContent = scenario.title;
+    scenarioQuestion.textContent = scenario.question;
+
+    // Progress bar update
+    const progressPercentage = (index / scenarios.length) * 100;
+    progressFill.style.width = progressPercentage + '%';
+
+    // Oude knoppen wissen
+    optionsContainer.innerHTML = '';
+
+    // Nieuwe knoppen maken
+    scenario.options.forEach(option => {
+      const btn = document.createElement('button');
+      btn.classList.add('option-btn');
+      btn.textContent = option.answer;
+      btn.addEventListener('click', () => {
+        chooseOption(option);
+      });
+      optionsContainer.appendChild(btn);
+    });
+  }
+
+  function chooseOption(option) {
+    // Result tekst + stats
+    const { died, angry, happy } = option.stats;
+
+    // Update counters
+    diedCount += died;
+    angryCount += angry;
+    happyCount += happy;
+
+    // Als er doden zijn, is dat een fail
+    if (died > 0) {
+      failCount++;
+    }
+
+    // Updaten in scoreboard
+    updateScoreboard();
+
+    // Bepalen of we game-over zijn (3 fails)
+    if (failCount >= 3) {
+      // Automatisch restart
+      modalTitle.textContent = "Oeps, je bent ontslagen!";
+      modalText.textContent = `Door je keuzes zijn er te vaak mensen omgekomen. (Failcount = ${failCount}) Je moet herbeginnen.`;
+      modalBg.style.display = 'flex';
+
+      // Als de gebruiker op OK klikt, restart:
+      closeModalBtn.onclick = () => {
+        modalBg.style.display = 'none';
+        restart();
+        // En na herstart: terug de standaard modal-functie herstellen
+        closeModalBtn.onclick = () => {
+          modalBg.style.display = 'none';
+          goToNextScenario();
+        };
+      };
+      return;
+    }
+
+    // Pop-up tonen met het gevolg en extra stats
+    modalTitle.textContent = "Gevolg";
+    modalText.textContent = `${option.result}\n\n` +
+      `❌ Dode: ${died}, ⚪ Boze: ${angry}, ✅ Blije: ${happy}`;
+    
+    modalBg.style.display = 'flex';
+  }
+
+  function goToNextScenario() {
+    currentIndex++;
+    if (currentIndex < scenarios.length) {
+      loadScenario(currentIndex);
+    } else {
+      // Einde
+      showEndScreen();
+    }
+  }
+
+  function showEndScreen() {
+    mainContent.classList.add('hidden');
+    endScreen.classList.remove('hidden');
+    endResultText.innerHTML = `
+      Je eindscore is:<br>
+      ❌ Doden: ${diedCount}<br>
+      ⚪ Boze mensen: ${angryCount}<br>
+      ✅ Blije mensen: ${happyCount}<br><br>
+      Dankzij jouw beslissingen is dit het eindresultaat!
+    `;
+  }
+
+  function updateScoreboard() {
+    diedCountSpan.textContent = diedCount;
+    angryCountSpan.textContent = angryCount;
+    happyCountSpan.textContent = happyCount;
+  }
+
+  function restart() {
+    // Statistieken resetten
+    diedCount = 0;
+    angryCount = 0;
+    happyCount = 0;
+    failCount = 0;
+    currentIndex = 0;
+
+    // Scoreboard updaten
+    updateScoreboard();
+
+    // Verberg eindscherm
+    endScreen.classList.add('hidden');
+    // Toon main content
+    mainContent.classList.remove('hidden');
+
+    // Laad opnieuw het eerste scenario
+    loadScenario(currentIndex);
+  }
+
+  // Zichtbaar maken voor de HTML-knop
+  window.restart = restart;
+</script>
+
+</body>
+</html>
