@@ -285,257 +285,259 @@
   let failCount = 0;
 
   const scenarios = [
-    {
-      title: "Situatie 1: Brandstof",
-      question: "Vlucht SN485 meldt dat de brandstofmeter fout zit. Hoe reageer je?",
-      image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      options: [
-        {
-          answer: "Laat het vliegtuig direct landen.",
-          result: "Je voorkomt een mogelijk groot probleem, maar andere vluchten raken vertraagd.",
-          stats: {
-            died: 0,        // Geen doden
-            angry: 50,      // 50 boze passagiers van andere vertraagde toestellen
-            happy: 120      // De inzittenden van SN485 blij omdat ze veilig landen
-          }
-        },
-        {
-          answer: "Laat het vliegtuig nog cirkelen.",
-          result: "Als de meting klopt, kan er een ernstige crash ontstaan.",
-          stats: {
-            died: 120,      // De vlucht stort neer
-            angry: 0,
-            happy: 0
-          }
+    const scenarios = [
+  {
+    title: "Situatie 1: Brandstof",
+    question: "Vlucht SN485 meldt dat de brandstofmeter fout zit. Hoe reageer je?",
+    image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    options: [
+      {
+        answer: "Laat het vliegtuig direct landen.",
+        result: "Je voorkomt een mogelijk groot probleem, maar andere vluchten zin vertraagd.",
+        stats: {
+          died: 0,
+          angry: 60,
+          happy: 100
         }
-      ]
-    },
-    {
-      title: "Situatie 2: Mist",
-      question: "Er is een zeer drukke mist rond de luchthaven, wat doe je?",
-      image: "https://images.unsplash.com/photo-1561933250-7c2f6f0117d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      options: [
-        {
-          answer: "Stop alle vluchten tot het zicht beter is.",
-          result: "Zeer veilig, maar je krijgt vertragingen en boze reizigers.",
-          stats: {
-            died: 0,
-            angry: 200,
-            happy: 0
-          }
-        },
-        {
-          answer: "Laat vliegtuigen met instrumenten landen.",
-          result: "Het kan fout gaan in de mist en zorgen voor een crash.",
-          stats: {
-            died: 30,
-            angry: 0,
-            happy: 0
-          }
+      },
+      {
+        answer: "Laat het vliegtuig nog cirkelen.",
+        result: "Als de meting toch klopt, kan er een erge situatie voorkomen.",
+        stats: {
+          died: 100,
+          angry: 0,
+          happy: 0
         }
-      ]
-    },
-    {
-      title: "Situatie 3: privéjet noodgeval",
-      question: "Een luxe privéjet heeft bijna geen brandstof en vraagt dringend een noodlanding.",
-      image: "https://images.unsplash.com/photo-1595171909583-98d7d6f1b5cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      options: [
-        {
-          answer: "Geef voorrang boven alle passagiersvluchten.",
-          result: "Je redt de privéjet, maar luchtvaartmaatschappijen gaan klagen.",
-          stats: {
-            died: 0,
-            angry: 200,  // boze passagiers omdat vluchten uitgesteld worden
-            happy: 2     // de mensen in de privéjet
-          }
-        },
-        {
-          answer: "Verwijs het toestel naar een kleiner vliegveld.",
-          result: "Als de brandstof op is voor ze daar zijn, kan het crashen.",
-          stats: {
-            died: 4,
-            angry: 0,
-            happy: 0
-          }
+      }
+    ]
+  },
+  {
+    title: "Situatie 2: Mist",
+    question: "Er is een zeer drukke mist rond de luchthaven, wat doe je?",
+    image: "https://images.unsplash.com/photo-1561933250-7c2f6f0117d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    options: [
+      {
+        answer: "Stop alle vluchten tot het zicht beter is.",
+        result: "Dit is heel veilig, maar je krijgt vertragingen en boze passagiers.",
+        stats: {
+          died: 0,
+          angry: 120,
+          happy: 0
         }
-      ]
-    },
-    {
-      title: "Situatie 4: Medisch noodgeval",
-      question: "Aan boord van een passagiersvliegtuig is iemand onwel geworden en heeft snel medische hulp nodig.",
-      image: "https://images.unsplash.com/photo-1523473827537-2f97a09bb969?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      options: [
-        {
-          answer: "Geef direct prioriteit aan landing en bel de hulpdiensten.",
-          result: "Je kunt een leven redden, maar andere vliegtuigen moeten wachten.",
-          stats: {
-            died: 0,
-            angry: 40,
-            happy: 1
-          }
-        },
-        {
-          answer: "Laat het vliegtuig normaal landen.",
-          result: "De patiënt kan overlijden omdat het te lang duurt.",
-          stats: {
-            died: 1,
-            angry: 0,
-            happy: 0
-          }
+      },
+      {
+        answer: "Laat vliegtuigen met instrumenten landen.",
+        result: "Hierdoor zijn er geen vertragingen, maar het risico op incidenten is een beetje hoger.",
+        stats: {
+          died: 40,
+          angry: 0,
+          happy: 0
         }
-      ]
-    },
-    {
-      title: "Situatie 5: Radars kapot",
-      question: "Je radarsystemen werken niet meer. Je hebt alleen nog radioverbinding met de piloten.",
-      image: "https://images.unsplash.com/photo-1505444024819-5c56b6e3e1c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      options: [
-        {
-          answer: "Laat geen toestellen landen tot de radar weer online is.",
-          result: "Zeer veilig, maar enorme wachttijden en boze maatschappijen.",
-          stats: {
-            died: 0,
-            angry: 300,
-            happy: 0
-          }
-        },
-        {
-          answer: "Werk met fysieke kaarten en vraag regelmatige positie-updates.",
-          result: "Er is risico op botsingen in de lucht.",
-          stats: {
-            died: 150,
-            angry: 0,
-            happy: 0
-          }
+      }
+    ]
+  },
+  {
+    title: "Situatie 3: privéjet noodgeval",
+    question: "Een luxe privéjet heeft bijna geen brandstof en vraagt dringend een noodlanding.",
+    image: "https://images.unsplash.com/photo-1595171909583-98d7d6f1b5cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    options: [
+      {
+        answer: "Geef voorrang boven alle passagiersvluchten.",
+        result: "Je redt de privéjet, maar luchtvaartmaatschappijen zullen onblij zijn en klagen.",
+        stats: {
+          died: 0,
+          angry: 80,
+          happy: 2
         }
-      ]
-    },
-    {
-      title: "Situatie 6: Overvolle luchthaven",
-      question: "De vertrekhal is vol en elk vliegtuig wil snel in de lucht. Wat doe je?",
-      image: "https://images.unsplash.com/photo-1519337529127-14e8e36ab6c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      options: [
-        {
-          answer: "Laat ze allemaal kort na elkaar opstijgen.",
-          result: "Risico dat vliegtuigen te dicht op elkaar zitten en een botsing veroorzaken.",
-          stats: {
-            died: 200,
-            angry: 0,
-            happy: 0
-          }
-        },
-        {
-          answer: "Strikte veiligheidsafstand, zelfs bij drukte.",
-          result: "Veiliger, maar reizigers klagen over lange wachttijden.",
-          stats: {
-            died: 0,
-            angry: 100,
-            happy: 0
-          }
+      },
+      {
+        answer: "Verwijs het toestel naar een kleiner vliegveld.",
+        result: "Goede oplossing als de brandstof het toelaat, anders neem je een groot risico.",
+        stats: {
+          died: 5,
+          angry: 0,
+          happy: 0
         }
-      ]
-    },
-    {
-      title: "Situatie 7: Militaire situatie",
-      question: "Een militair vliegtuig heeft prioriteit gevraagd. Het wil meteen landen.",
-      image: "https://images.unsplash.com/photo-1572343700717-8b98a27d2180?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      options: [
-        {
-          answer: "Geef direct voorrang en stop al het andere verkeer.",
-          result: "Je volgt het militaire bevel, maar veel passagiers raken ontevreden.",
-          stats: {
-            died: 0,
-            angry: 300,
-            happy: 0
-          }
-        },
-        {
-          answer: "Laat het militair vliegtuig via een andere route landen.",
-          result: "Minder impact op de andere vluchten, maar meer coördinatiewerk nodig.",
-          stats: {
-            died: 0,
-            angry: 50,
-            happy: 0
-          }
+      }
+    ]
+  },
+  {
+    title: "Situatie 4: Medisch noodgeval",
+    question: "Aan boord van een passagiersvliegtuig is iemand onwel geworden en heeft snel medische hulp nodig.",
+    image: "https://images.unsplash.com/photo-1523473827537-2f97a09bb969?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    options: [
+      {
+        answer: "Geef direct prioriteit aan landing en bel de hulpdiensten.",
+        result: "Je kunt een leven redden, maar andere vliegtuigen moeten wel wachten.",
+        stats: {
+          died: 0,
+          angry: 50,
+          happy: 1
         }
-      ]
-    },
-    {
-      title: "Situatie 8: Onweer",
-      question: "Donkere wolken vol bliksem boven de luchthaven. Wat doe je?",
-      image: "https://images.unsplash.com/photo-1510760782654-4b7daf3a7044?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      options: [
-        {
-          answer: "Sluit de luchthaven tijdelijk totdat het weer goed weer is.",
-          result: "Je voorkomt ongelukken, maar er is grote vertraging.",
-          stats: {
-            died: 0,
-            angry: 150,
-            happy: 0
-          }
-        },
-        {
-          answer: "Doe verder met vluchten, maar houd strenge regels.",
-          result: "Blikseminslag kan toestellen raken, risico op crashes.",
-          stats: {
-            died: 70,
-            angry: 0,
-            happy: 0
-          }
+      },
+      {
+        answer: "Laat het vliegtuig normaal landen.",
+        result: "Je verstoort andere vliegtuigen minder, maar er is meer risico voor de patiënt.",
+        stats: {
+          died: 1,
+          angry: 0,
+          happy: 0
         }
-      ]
-    },
-    {
-      title: "Scenario 9: Hydraulische problemen",
-      question: "Een toestel meldt dat de hydraulische druk wegvalt en mogelijk een noodlanding moet maken.",
-      image: "https://images.unsplash.com/photo-1537222934199-8cd3d1ebbaf3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      options: [
-        {
-          answer: "Start meteen een noodplan en zet brandweer en ambulance klaar.",
-          result: "De veiligheid is hoog, maar je zorgt voor onrust bij andere vluchten.",
-          stats: {
-            died: 0,
-            angry: 50,
-            happy: 0
-          }
-        },
-        {
-          answer: "Laat het vliegtuig een extra ronde vliegen om te zien of het systeem stabiliseert.",
-          result: "Als het mislukt, is een crash onvermijdelijk.",
-          stats: {
-            died: 130,
-            angry: 0,
-            happy: 0
-          }
+      }
+    ]
+  },
+  {
+    title: "Situatie 5: Radars kapot",
+    question: "Je radarsystemen werken niet meer. Je hebt alleen nog radioverbinding met de piloten.",
+    image: "https://images.unsplash.com/photo-1505444024819-5c56b6e3e1c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    options: [
+      {
+        answer: "Laat geen toestellen landen tot de radar weer online is.",
+        result: "Zeer veilig, maar er is veel vertraging en stress voor de piloten.",
+        stats: {
+          died: 0,
+          angry: 100,
+          happy: 0
         }
-      ]
-    },
-    {
-      title: "Situatie 10: Verdwijnsel",
-      question: "Een vliegtuig verdwijnt plotseling van de radar en er komt geen reactie op de radio.",
-      image: "https://images.unsplash.com/photo-1585508889209-46dcc56ef149?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-      options: [
-        {
-          answer: "Stuur reddingsteams en verwittig de maatschappij.",
-          result: "Misschien vals alarm, maar je bent wel veilig bezig.",
-          stats: {
-            died: 0,
-            angry: 50,
-            happy: 0
-          }
-        },
-        {
-          answer: "Wacht kort en probeer opnieuw contact te maken.",
-          result: "Als het echt misgaat, verlies je kostbare minuten en er kan een crash zijn.",
-          stats: {
-            died: 120,
-            angry: 0,
-            happy: 0
-          }
+      },
+      {
+        answer: "Werk met fysieke kaarten en vraag regelmatige positie-updates.",
+        result: "Dit heeft veel risico, maar als je het goed doet, kan het verkeer normaal door.",
+        stats: {
+          died: 70,
+          angry: 0,
+          happy: 0
         }
-      ]
-    }
-  ];
+      }
+    ]
+  },
+  {
+    title: "Situatie 6: Overvolle luchthaven",
+    question: "De vertrekhal is vol en elk vliegtuig wil snel in de lucht. Wat doe je?",
+    image: "https://images.unsplash.com/photo-1519337529127-14e8e36ab6c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    options: [
+      {
+        answer: "Laat ze allemaal kort na elkaar opstijgen.",
+        result: "De vertragingen en wachtende vliegtuigen verminderen, maar het risico op te weinig afstand is groot.",
+        stats: {
+          died: 100,
+          angry: 0,
+          happy: 0
+        }
+      },
+      {
+        answer: "Strikte veiligheidsafstand, zelfs bij drukte.",
+        result: "Veiliger, maar reizigers en piloten worden ongeduldig.",
+        stats: {
+          died: 0,
+          angry: 70,
+          happy: 0
+        }
+      }
+    ]
+  },
+  {
+    title: "Situatie 7: Militaire situatie",
+    question: "Een militair vliegtuig heeft prioriteit gevraagd. Het wil meteen landen.",
+    image: "https://images.unsplash.com/photo-1572343700717-8b98a27d2180?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    options: [
+      {
+        answer: "Geef direct voorrang en stop al het andere verkeer.",
+        result: "Je respecteert het militaire bevel, maar reizegers kunnen boos woden over de vertraging.",
+        stats: {
+          died: 0,
+          angry: 100,
+          happy: 0
+        }
+      },
+      {
+        answer: "Laat het militair vlirgtuig via een andere route landen.",
+        result: "Minder impact op de andere vluchten, maar kan mogelijk andere problemen veroorzaken.",
+        stats: {
+          died: 0,
+          angry: 20,
+          happy: 0
+        }
+      }
+    ]
+  },
+  {
+    title: "Situatie 8: Onweer",
+    question: "Donkere wolken vol bliksem boven de luchthaven. Wat doe je?",
+    image: "https://images.unsplash.com/photo-1510760782654-4b7daf3a7044?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    options: [
+      {
+        answer: "Sluit de luchthaven tijdelijk totdat het weer goed weer is.",
+        result: "Er is veel minder risico op ongevallen, maar enorme vertragingen en afschaffingen.",
+        stats: {
+          died: 0,
+          angry: 60,
+          happy: 0
+        }
+      },
+      {
+        answer: "Doe verder met vluchten, maar houd strenge regels.",
+        result: "Minder vertragingen en andere problemen, maar het gevaar bij bliksem is groot.",
+        stats: {
+          died: 40,
+          angry: 0,
+          happy: 0
+        }
+      }
+    ]
+  },
+  {
+    title: "Scenario 9: Hydraulische problemen",
+    question: "Een toestel meldt dat de hydraulische druk wegvalt en mogelijk een noodlanding moet maken.",
+    image: "https://images.unsplash.com/photo-1537222934199-8cd3d1ebbaf3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    options: [
+      {
+        answer: "Start meteen een noodplan en zet brandweer en ambulance klaar.",
+        result: "De veiligheid is goed gewaarborgd, maar je veroorzaakt paniek onder andere vluchten.",
+        stats: {
+          died: 0,
+          angry: 50,
+          happy: 0
+        }
+      },
+      {
+        answer: "Laat het vliegtuig een extra ronde vliegen om te zien of het systeem stabiliseert.",
+        result: "Wellicht win je tijd, maar als het misgaat is de situatie erger.",
+        stats: {
+          died: 100,
+          angry: 0,
+          happy: 0
+        }
+      }
+    ]
+  },
+  {
+    title: "Situatie 10: Verdwijnsel",
+    question: "Een vliegtuif verdwijnt plotseling van de radar en er komt geen reactie op de radio.",
+    image: "https://images.unsplash.com/photo-1585508889209-46dcc56ef149?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+    options: [
+      {
+        answer: "Stuur reddinsteams en vaarschuw militair en de maatschapij.",
+        result: "Mogelijk overdreven als het vals alarm is, maar wel zeer veilig.",
+        stats: {
+          died: 0,
+          angry: 20,
+          happy: 0
+        }
+      },
+      {
+        answer: "Wacht kort en probeer opnieuw contact te maken.",
+        result: "Je voorkomt paniek, maar verliest veel tijd als het serieus is.",
+        stats: {
+          died: 80,
+          angry: 0,
+          happy: 0
+        }
+      }
+    ]
+  }
+];
+
 
   let currentIndex = 0;
 
