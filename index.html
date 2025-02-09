@@ -6,7 +6,7 @@
   <title>Nederlands creatieve opdracht Luchtverkeersleiding</title>
   
   <style>
-    /* Globale reset en font */
+   
     * {
       margin: 0; 
       padding: 0;
@@ -131,7 +131,7 @@
       background: #3b5f7c;
     }
 
-    /* Modal-styling (pop-up) */
+   
     .modal-bg {
       position: fixed; 
       top: 0; 
@@ -220,7 +220,7 @@
   <p>Gemaakt door Noah Rodriguez 4NW3</p>
 </header>
 
-<!-- Scoreboard -->
+
 <div class="scoreboard">
   <p>Dode mensen ❌: <span id="died-count">0</span></p>
   <p>Boze mensen ⚪: <span id="angry-count">0</span></p>
@@ -247,11 +247,11 @@
   <p class="scenario-question" id="scenario-question"></p>
 
   <div class="options-container" id="options-container">
-    <!-- Knoppen komen hier via JS -->
+   
   </div>
 </main>
 
-<!-- Modal voor gevolgen -->
+
 <div class="modal-bg" id="modal-bg">
   <div class="modal">
     <h2 id="modal-title">Gevolg</h2>
@@ -260,24 +260,17 @@
   </div>
 </div>
 
-<!-- Eindscherm -->
+
 <div id="end-screen" class="hidden end-screen">
   <h2>Dit was het!</h2>
   <p id="end-result-text">
-    <!-- Hier tonen we later de eindstatistieken -->
+
   </p>
   <button class="restart-btn" onclick="restart()">Opnieuw Beginnen</button>
 </div>
 
 <script>
-  /*
-    We hebben drie counters:
-    - diedCount (doden) => ❌
-    - angryCount (boze mensen) => ⚪
-    - happyCount (blije/geredde mensen) => ✅
-
-    EN: failCount telt hoe vaak je een 'dodelijk' scenario kiest. Bij 3 fails moet je herstarten.
-  */
+ 
 
   let diedCount = 0;
   let angryCount = 0;
@@ -392,7 +385,7 @@
     image: "https://www.c4isrnet.com/resizer/v2/LU55NH45SFHUVOOCEWTDNVNNFA.jpg?auth=9075310df5d6d3cdcadadfa820767bb74ba21c4a7a80edb6eb70cd115007eaae&width=7000&height=4667",
     options: [
       {
-        answer: "Laat geen toestellen landen tot de radar weer online is.",
+        answer: "Laat geen vliegtuigen landen tot de radar weer online is.",
         result: "Zeer veilig, maar er is veel vertraging en stress voor de piloten.",
         stats: {
           died: 0,
@@ -541,7 +534,7 @@
 
   let currentIndex = 0;
 
-  // Elementen ophalen
+  
   const mainContent = document.getElementById('main-content');
   const scenarioImage = document.getElementById('scenario-image');
   const scenarioTitle = document.getElementById('scenario-title');
@@ -551,18 +544,18 @@
   const endScreen = document.getElementById('end-screen');
   const endResultText = document.getElementById('end-result-text');
 
-  // Scoreboard elementen
+ 
   const diedCountSpan = document.getElementById('died-count');
   const angryCountSpan = document.getElementById('angry-count');
   const happyCountSpan = document.getElementById('happy-count');
 
-  // Modal elementen
+ 
   const modalBg = document.getElementById('modal-bg');
   const modalTitle = document.getElementById('modal-title');
   const modalText = document.getElementById('modal-text');
   const closeModalBtn = document.getElementById('close-modal-btn');
 
-  // Bij opstarten: eerste scenario laden
+
   loadScenario(currentIndex);
 
   closeModalBtn.addEventListener('click', () => {
@@ -576,14 +569,14 @@
     scenarioTitle.textContent = scenario.title;
     scenarioQuestion.textContent = scenario.question;
 
-    // Progress bar update
+    
     const progressPercentage = (index / scenarios.length) * 100;
     progressFill.style.width = progressPercentage + '%';
 
-    // Oude knoppen wissen
+    
     optionsContainer.innerHTML = '';
 
-    // Nieuwe knoppen maken
+  
     scenario.options.forEach(option => {
       const btn = document.createElement('button');
       btn.classList.add('option-btn');
@@ -596,34 +589,34 @@
   }
 
   function chooseOption(option) {
-    // Result tekst + stats
+
     const { died, angry, happy } = option.stats;
 
-    // Update counters
+
     diedCount += died;
     angryCount += angry;
     happyCount += happy;
 
-    // Als er doden zijn, is dat een fail
+
     if (died > 0) {
       failCount++;
     }
 
-    // Updaten in scoreboard
+
     updateScoreboard();
 
-    // Bepalen of we game-over zijn (3 fails)
+)
     if (failCount >= 3) {
-      // Automatisch restart
+ 
       modalTitle.textContent = "Whoops, je bent ontslagen!";
       modalText.textContent = `Door je keuzes zijn er te vaak mensen dood. Je moet herbeginnen.`;
       modalBg.style.display = 'flex';
 
-      // Als de gebruiker op OK klikt, restart:
+  
       closeModalBtn.onclick = () => {
         modalBg.style.display = 'none';
         restart();
-        // En na herstart: terug de standaard modal-functie herstellen
+
         closeModalBtn.onclick = () => {
           modalBg.style.display = 'none';
           goToNextScenario();
@@ -632,7 +625,7 @@
       return;
     }
 
-    // Pop-up tonen met het gevolg en extra stats
+   
     modalTitle.textContent = "Gevolg";
     modalText.textContent = `${option.result}\n\n` +
       `❌ Dode: ${died}, ⚪ Boze: ${angry}, ✅ Blije: ${happy}`;
@@ -645,7 +638,7 @@
     if (currentIndex < scenarios.length) {
       loadScenario(currentIndex);
     } else {
-      // Einde
+
       showEndScreen();
     }
   }
@@ -671,26 +664,26 @@
   }
 
   function restart() {
-    // Statistieken resetten
+
     diedCount = 0;
     angryCount = 0;
     happyCount = 0;
     failCount = 0;
     currentIndex = 0;
 
-    // Scoreboard updaten
+
     updateScoreboard();
 
-    // Verberg eindscherm
+
     endScreen.classList.add('hidden');
-    // Toon main content
+
     mainContent.classList.remove('hidden');
 
-    // Laad opnieuw het eerste scenario
+
     loadScenario(currentIndex);
   }
 
-  // Zichtbaar maken voor de HTML-knop
+
   window.restart = restart;
 </script>
 
