@@ -2,283 +2,93 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nederlands creatieve opdracht Luchtverkeersleiding</title>
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luchtverkeersleiding – simulator (met timer)</title>
   <style>
-   
-    * {
-      margin: 0; 
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: #a88f32;
-      color: #333;
-    }
-
-    header {
-      background: url("https://images.unsplash.com/photo-1474204075012-7e7b60b75b99?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80");
-      background-size: cover;
-      background-position: center;
-      padding: 40px 20px;
-      text-align: center;
-      color: #fff;
-    }
-
-    header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-    }
-
-    header p {
-      font-size: 1.2rem;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
-    }
-
-    .scoreboard {
-      display: flex;
-      justify-content: space-around;
-      background: #fff;
-      max-width: 800px;
-      margin: 20px auto 0 auto;
-      padding: 10px;
-      border-radius: 6px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      animation: fadeIn 0.8s ease;
-    }
-    .scoreboard p {
-      font-size: 1rem;
-      margin: 0;
-    }
-    .scoreboard span {
-      font-weight: bold;
-    }
-
-    main {
-      max-width: 800px;
-      margin: 20px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      animation: fadeIn 0.8s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .progress-bar {
-      width: 100%;
-      background: #eee;
-      border-radius: 4px;
-      height: 10px;
-      margin-bottom: 20px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #4b79a1, #283e51);
-      transition: width 0.4s ease;
-    }
-
-    .scenario-image {
-      width: 100%;
-      max-height: 200px;
-      object-fit: cover;
-      border-radius: 6px;
-      margin: 10px 0;
-    }
-
-    .scenario-title {
-      font-size: 1.5rem;
-      margin: 10px 0;
-      color: #222;
-    }
-
-    .scenario-question {
-      font-size: 1rem;
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
-
-    .options-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .option-btn {
-      background: #4b79a1;
-      color: #fff;
-      border: none;
-      padding: 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      font-size: 1rem;
-    }
-
-    .option-btn:hover {
-      background: #3b5f7c;
-    }
-
-   
-    .modal-bg {
-      position: fixed; 
-      top: 0; 
-      left: 0;
-      width: 100%; 
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-
-    .modal {
-      background: #fff;
-      width: 90%;
-      max-width: 500px;
-      padding: 20px;
-      border-radius: 6px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    }
-
-    .modal h2 {
-      margin-bottom: 10px;
-    }
-
-    .modal p {
-      margin-bottom: 20px;
-      line-height: 1.4;
-    }
-
-    .close-modal-btn {
-      background: #4b79a1;
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .close-modal-btn:hover {
-      background: #3b5f7c;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .end-screen {
-      text-align: center;
-      padding: 50px;
-    }
-
-    .end-screen h2 {
-      font-size: 2rem;
-      margin-bottom: 10px;
-    }
-
-    .end-screen p {
-      font-size: 1.2rem;
-      margin-bottom: 20px;
-      line-height: 1.5;
-    }
-
-    .restart-btn {
-      background: #4b79a1;
-      color: #fff;
-      border: none;
-      padding: 12px;
-      font-size: 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .restart-btn:hover {
-      background: #3b5f7c;
-    }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
+    body{background:#a88f32;color:#333}
+    header{background:url("https://images.unsplash.com/photo-1474204075012-7e7b60b75b99?auto=format&fit=crop&w=1350&q=80") center/cover;
+           padding:40px 20px;text-align:center;color:#fff}
+    header h1{font-size:2.5rem;margin-bottom:10px;text-shadow:2px 2px 4px rgba(0,0,0,.7)}
+    header p{font-size:1.2rem;text-shadow:2px 2px 4px rgba(0,0,0,.6)}
+    .scoreboard{display:flex;justify-content:space-around;flex-wrap:wrap;gap:10px;
+                background:#fff;max-width:900px;margin:20px auto 0;padding:10px;
+                border-radius:6px;box-shadow:0 0 10px rgba(0,0,0,.1)}
+    .scoreboard p{font-size:1rem}.scoreboard span{font-weight:bold}
+    main{max-width:800px;margin:20px auto;background:#fff;padding:20px;border-radius:10px;
+         box-shadow:0 0 10px rgba(0,0,0,.1)}
+    .progress-bar{width:100%;background:#eee;border-radius:4px;height:10px;margin-bottom:20px;overflow:hidden}
+    .progress-fill{width:0;height:100%;background:linear-gradient(90deg,#4b79a1,#283e51);transition:width .4s ease}
+    .scenario-image{width:100%;max-height:200px;object-fit:cover;border-radius:6px;margin:10px 0}
+    .scenario-title{font-size:1.5rem;margin:10px 0;color:#222}
+    .scenario-question{font-size:1rem;margin-bottom:10px;line-height:1.4}
+    .options-container{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+    .option-btn{background:#4b79a1;color:#fff;border:none;padding:10px;border-radius:4px;cursor:pointer;transition:background .3s}
+    .option-btn:hover{background:#3b5f7c}
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:999}
+    .modal{background:#fff;width:90%;max-width:500px;padding:20px;border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+    .close-modal-btn{background:#4b79a1;color:#fff;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;transition:background .3s}
+    .close-modal-btn:hover{background:#3b5f7c}
+    .hidden{display:none!important}
+    .end-screen{text-align:center;padding:50px}
+    .restart-btn{background:#4b79a1;color:#fff;border:none;padding:12px 24px;font-size:1rem;border-radius:4px;cursor:pointer;transition:background .3s}
+    .restart-btn:hover{background:#3b5f7c}
   </style>
 </head>
 <body>
-
 <header>
-  <h1>Luchtverkeersleiding simulator jaartaak</h1>
-  <p>Gemaakt door Noah Rodriguez 4NW3</p>
+  <h1>Luchtverkeersleiding – simulator</h1>
+  <p>Creatieve opdracht • Noah Rodriguez 4NW3</p>
 </header>
 
-
 <div class="scoreboard">
-  <p>Dode mensen ❌: <span id="died-count">0</span></p>
-  <p>Boze mensen ⚪: <span id="angry-count">0</span></p>
-  <p>Blije mensen ✅: <span id="happy-count">0</span></p>
+  <p>❌ Dode mensen: <span id="died-count">0</span></p>
+  <p>⚪ Boze mensen: <span id="angry-count">0</span></p>
+  <p>✅ Blije mensen: <span id="happy-count">0</span></p>
+  <p>⏳ Tijd: <span id="timer-count">20</span>s</p>
 </div>
 
 <div class="score-info">
   <p>
-    als je in totaal <strong>3 keer een dodelijk scenario</strong> veroorzaakt, word je ontslagen.  
-    <br>⚪ Boze mensen is positief.  
-    <br>✅ Blije mensen is positied.  
-    <br>Probeer ongelukken te vermijden
+    als je in totaal <strong>3 keer een dodelijk scenario</strong> veroorzaakt, word je ontslagen.<br>
+    ⚪ Boze mensen is positief.<br>
+    ✅ Blije mensen is positied.<br>
+    Probeer ongelukken te vermijden
   </p>
 </div>
 
 <main id="main-content">
-  <div class="progress-bar">
-    <div class="progress-fill" id="progress-fill"></div>
-  </div>
-
-  <img id="scenario-image" class="scenario-image" src="" alt="Scenario Image" />
-
-  <h2 class="scenario-title" id="scenario-title"></h2>
-  <p class="scenario-question" id="scenario-question"></p>
-
-  <div class="options-container" id="options-container">
-   
-  </div>
+  <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+  <img id="scenario-image" class="scenario-image" alt="Scenario">
+  <h2 id="scenario-title" class="scenario-title"></h2>
+  <p id="scenario-question" class="scenario-question"></p>
+  <div id="options-container" class="options-container"></div>
 </main>
 
-
-<div class="modal-bg" id="modal-bg">
+<div id="modal-bg" class="modal-bg">
   <div class="modal">
     <h2 id="modal-title">Gevolg</h2>
     <p id="modal-text"></p>
-    <button class="close-modal-btn" id="close-modal-btn">OK</button>
+    <button id="close-modal-btn" class="close-modal-btn">OK</button>
   </div>
 </div>
 
-
 <div id="end-screen" class="hidden end-screen">
   <h2>Dit was het!</h2>
-  <p id="end-result-text">
-
-  </p>
+  <p id="end-result-text"></p>
   <button class="restart-btn" onclick="restart()">Opnieuw Beginnen</button>
 </div>
 
 <script>
- 
+/* ---------------- VARIABELEN ---------------- */
+let diedCount = 0, angryCount = 0, happyCount = 0, failCount = 0;
+let currentIndex = 0;
+const TIME_LIMIT = 15;   // seconden
+let remainingTime = TIME_LIMIT;
+let timerInterval = null;
 
-  let diedCount = 0;
-  let angryCount = 0;
-  let happyCount = 0;
-  let failCount = 0;
-
- 
-  const scenarios = [
+/* ---------------- OORSPRONGKELIJKE SCENARIO DATA ---------------- */
+const scenarios = [
   {
     title: "Situatie 1: Brandstof",
     question: "Vlucht SN485 meldt dat de brandstofmeter fout zit. Hoe reageer je?",
@@ -287,20 +97,12 @@
       {
         answer: "Laat het vliegtuig direct landen.",
         result: "In de meeste situaties, is dit de juiste keuze. Een luchtverkeersbegeleider wil altijd aan de veilige kant blijven en geen risico's nemen.",
-        stats: {
-          died: 0,
-          angry: 60,
-          happy: 100
-        }
+        stats: {died:0,angry:60,happy:100}
       },
       {
         answer: "Laat het vliegtuig nog cirkelen.",
         result: "Door deze keuze is het vlucht gecrasht.",
-        stats: {
-          died: 84,
-          angry: 12,
-          happy: 0
-        }
+        stats: {died:84,angry:12,happy:0}
       }
     ]
   },
@@ -312,20 +114,12 @@
       {
         answer: "Stop alle vluchten tot het zicht beter is.",
         result: "Dit is heel veilig en waarschijnlijk de beste optie als je geen risico's wilt nemen.",
-        stats: {
-          died: 0,
-          angry: 120,
-          happy: 0
-        }
+        stats: {died:0,angry:120,happy:0}
       },
       {
         answer: "Laat vliegtuigen met instrumenten landen.",
         result: "Dit is ook een zeer veilige manier om te landen doordat instrumenten vandaag zeer geavanceerd zijn.",
-        stats: {
-          died: 0,
-          angry: 0,
-          happy: 47
-        }
+        stats: {died:0,angry:0,happy:47}
       }
     ]
   },
@@ -337,20 +131,12 @@
       {
         answer: "Geef voorrang boven alle passagiersvluchten.",
         result: "Je redt de privéjet, maar luchtvaartmaatschappijen zullen onblij zijn en klagen. Dit is ook de juiste keuze in deze situatie, boze mensen is beter dan dode mensen.",
-        stats: {
-          died: 0,
-          angry: 80,
-          happy: 5
-        }
+        stats: {died:0,angry:80,happy:5}
       },
       {
         answer: "Verwijs het toestel naar een kleiner vliegveld.",
         result: "Het vliegtuig had niet genoeg brandstof en is gecrasht in een bos waardoor er ook een kleine bosbrand is ontstaan.",
-        stats: {
-          died: 5,
-          angry: 57,
-          happy: 2
-        }
+        stats: {died:5,angry:57,happy:2}
       }
     ]
   },
@@ -362,20 +148,12 @@
       {
         answer: "Geef direct prioriteit aan landing en bel de hulpdiensten.",
         result: "Je kunt een leven redden, maar andere vliegtuigen moeten wel wachten. Dit is de juiste keuze in zo'n situatie.",
-        stats: {
-          died: 0,
-          angry: 37,
-          happy: 7
-        }
+        stats: {died:0,angry:37,happy:7}
       },
       {
         answer: "Laat het vliegtuig normaal landen.",
         result: "De patiënt is overleden door deze keuze.",
-        stats: {
-          died: 1,
-          angry: 26,
-          happy: 12
-        }
+        stats: {died:1,angry:26,happy:12}
       }
     ]
   },
@@ -387,20 +165,12 @@
       {
         answer: "Laat geen vliegtuigen landen tot de radar weer online is.",
         result: "Zeer veilig, maar er is veel vertraging en stress voor de piloten.",
-        stats: {
-          died: 0,
-          angry: 74,
-          happy: 8
-        }
+        stats: {died:0,angry:74,happy:8}
       },
       {
         answer: "Werk met fysieke kaarten en vraag regelmatige positie-updates.",
         result: "Een klein vliegtuigje met 7 personen is hierdoor gecrasht maar andere vluchten zijn sneller aan hun bestemming aangekomen.",
-        stats: {
-          died: 7,
-          angry: 112,
-          happy: 52
-        }
+        stats: {died:7,angry:112,happy:52}
       }
     ]
   },
@@ -412,20 +182,12 @@
       {
         answer: "Laat ze allemaal kort na elkaar opstijgen.",
         result: "Er is turbulentie onstond door een groter vliegtuig (Asiana B747) en vlucht ITY165 naar Rome heeft het controol verloren.",
-        stats: {
-          died: 76,
-          angry: 52,
-          happy: 2
-        }
+        stats: {died:76,angry:52,happy:2}
       },
       {
         answer: "Strikte veiligheidsafstand, zelfs bij drukte.",
         result: "Veiliger, maar reizigers en piloten worden ongeduldig. Dit is hier de juiste keuze, veiligheid van passagiers is het belangrijkste.",
-        stats: {
-          died: 0,
-          angry: 70,
-          happy: 76
-        }
+        stats: {died:0,angry:70,happy:76}
       }
     ]
   },
@@ -437,20 +199,12 @@
       {
         answer: "Geef direct voorrang en stop al het andere verkeer.",
         result: "Je respecteert het militaire bevel, maar reizegers kunnen boos woden over de vertraging. Dit is de juiste keuze omdat je nooit tegen een militair bevel kan gaan.",
-        stats: {
-          died: 0,
-          angry: 148,
-          happy: 21
-        }
+        stats: {died:0,angry:148,happy:21}
       },
       {
         answer: "Laat het militair vlirgtuig via een andere route landen.",
         result: "Ze moesten mensen gaan redden in een noodsituatie, ze zijn niet op tijd aangekomen.",
-        stats: {
-          died: 4,
-          angry: 201,
-          happy: 89
-        }
+        stats: {died:4,angry:201,happy:89}
       }
     ]
   },
@@ -462,20 +216,12 @@
       {
         answer: "Sluit de luchthaven tijdelijk totdat het weer goed weer is.",
         result: "Bijna alle passagiersvluchten zijn vertraagd of afgeschaft, maar je hebt geen risico genomen.",
-        stats: {
-          died: 0,
-          angry: 423,
-          happy: 67
-        }
+        stats: {died:0,angry:423,happy:67}
       },
       {
         answer: "Doe verder met vluchten, maar houd strenge regels.",
         result: "Een privéjet met 3 milljonairs is hierdoor door bliksem geraakt en alle systemen zijn kapot. Maar sommige passagiersvluchten zijn op tijd weg!",
-        stats: {
-          died: 5,
-          angry: 0,
-          happy: 45
-        }
+        stats: {died:5,angry:0,happy:45}
       }
     ]
   },
@@ -487,20 +233,12 @@
       {
         answer: "Start een noodplan en verwittig brandweer en ambulance.",
         result: "Vliegtuig is geland en alle passagiers zijn veilig geëvacueerd, sommige vluchten zijn hierdoor wel vertraagd.",
-        stats: {
-          died: 0,
-          angry: 51,
-          happy: 108
-        }
+        stats: {died:0,angry:51,happy:108}
       },
       {
         answer: "Laat het vliegtuig een extra ronde vliegen om te zien of het systeem stabiliseert.",
         result: "Dit heeft niet gewerkt, die is gecrasht in een klein dorpje naast het luchthaven waardoor iedereen ofwel dood of boos is.",
-        stats: {
-          died: 98,
-          angry: 48,
-          happy: 0
-        }
+        stats: {died:98,angry:48,happy:0}
       }
     ]
   },
@@ -512,180 +250,143 @@
       {
         answer: "Stuur reddingsteams en vaarschuw militair en de luchtvaartsmaatschapij.",
         result: "Mogelijk overdreven als het vals alarm is, maar wel zeer veilig.",
-        stats: {
-          died: 0,
-          angry: 20,
-          happy: 79
-        }
+        stats: {died:0,angry:20,happy:79}
       },
       {
         answer: "Wacht kort en probeer opnieuw contact te maken.",
         result: "Het vliegtuig werd nooit teruggevonden en niemand weet echt wat er gebeurd is.",
-        stats: {
-          died: 74,
-          angry: 25,
-          happy: 0
-        }
+        stats: {died:74,angry:25,happy:0}
       }
     ]
   }
 ];
 
+/* ---------------- DOM ELEMENTEN ---------------- */
+const scenarioImage = document.getElementById('scenario-image');
+const scenarioTitle = document.getElementById('scenario-title');
+const scenarioQuestion = document.getElementById('scenario-question');
+const optionsContainer = document.getElementById('options-container');
+const progressFill = document.getElementById('progress-fill');
+const timerCountSpan = document.getElementById('timer-count');
+const diedCountSpan  = document.getElementById('died-count');
+const angryCountSpan = document.getElementById('angry-count');
+const happyCountSpan = document.getElementById('happy-count');
+const modalBg    = document.getElementById('modal-bg');
+const modalTitle = document.getElementById('modal-title');
+const modalText  = document.getElementById('modal-text');
+const closeModalBtn = document.getElementById('close-modal-btn');
+const mainContent = document.getElementById('main-content');
+const endScreen = document.getElementById('end-screen');
+const endResultText = document.getElementById('end-result-text');
 
-  let currentIndex = 0;
+/* ---------------- TIMER ---------------- */
+function startTimer() {
+  timerCountSpan.textContent = remainingTime;
+  timerInterval = setInterval(() => {
+    remainingTime--;
+    timerCountSpan.textContent = remainingTime;
+    if (remainingTime <= 0) {
+      clearInterval(timerInterval);
+      autoChooseWorst();
+    }
+  }, 1000);
+}
+function resetTimer() {
+  clearInterval(timerInterval);
+  remainingTime = TIME_LIMIT;
+  timerCountSpan.textContent = remainingTime;
+}
 
-  
-  const mainContent = document.getElementById('main-content');
-  const scenarioImage = document.getElementById('scenario-image');
-  const scenarioTitle = document.getElementById('scenario-title');
-  const scenarioQuestion = document.getElementById('scenario-question');
-  const optionsContainer = document.getElementById('options-container');
-  const progressFill = document.getElementById('progress-fill');
-  const endScreen = document.getElementById('end-screen');
-  const endResultText = document.getElementById('end-result-text');
-
- 
-  const diedCountSpan = document.getElementById('died-count');
-  const angryCountSpan = document.getElementById('angry-count');
-  const happyCountSpan = document.getElementById('happy-count');
-
- 
-  const modalBg = document.getElementById('modal-bg');
-  const modalTitle = document.getElementById('modal-title');
-  const modalText = document.getElementById('modal-text');
-  const closeModalBtn = document.getElementById('close-modal-btn');
-
-
-  loadScenario(currentIndex);
-
-  closeModalBtn.addEventListener('click', () => {
-    modalBg.style.display = 'none';
-    goToNextScenario();
+/* ---------------- LAAD SCENARIO ---------------- */
+function loadScenario(i) {
+  const s = scenarios[i];
+  scenarioImage.src = s.image;
+  scenarioTitle.textContent = s.title;
+  scenarioQuestion.textContent = s.question;
+  progressFill.style.width = (i / scenarios.length) * 100 + '%';
+  optionsContainer.innerHTML = '';
+  s.options.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = o.answer;
+    btn.onclick = () => chooseOption(o);
+    optionsContainer.appendChild(btn);
   });
+  resetTimer();
+  startTimer();
+}
 
-  function loadScenario(index) {
-    const scenario = scenarios[index];
-    scenarioImage.src = scenario.image;
-    scenarioTitle.textContent = scenario.title;
-    scenarioQuestion.textContent = scenario.question;
-
-    
-    const progressPercentage = (index / scenarios.length) * 100;
-    progressFill.style.width = progressPercentage + '%';
-
-    
-    optionsContainer.innerHTML = '';
-
-  
-    scenario.options.forEach(option => {
-      const btn = document.createElement('button');
-      btn.classList.add('option-btn');
-      btn.textContent = option.answer;
-      btn.addEventListener('click', () => {
-        chooseOption(option);
-      });
-      optionsContainer.appendChild(btn);
-    });
-  }
-
-  function chooseOption(option) {
-
-    const { died, angry, happy } = option.stats;
-
-
-    diedCount += died;
-    angryCount += angry;
-    happyCount += happy;
-
-
-    if (died > 0) {
-      failCount++;
+/* ---------------- KIEZEN ---------------- */
+function chooseOption(o) {
+  clearInterval(timerInterval);
+  applyStats(o.stats, o.result);
+}
+function autoChooseWorst() {
+  const s = scenarios[currentIndex];
+  let worst = s.options[0];
+  s.options.forEach(o => {
+    if (o.stats.died > worst.stats.died ||
+       (o.stats.died === worst.stats.died && o.stats.angry > worst.stats.angry)) {
+      worst = o;
     }
+  });
+  applyStats(worst.stats, `⏰ Tijd is op! ${worst.result}`);
+}
 
+/* ---------------- GEGEVENS VERWERKEN ---------------- */
+function applyStats(stats, resText) {
+  diedCount  += stats.died;
+  angryCount += stats.angry;
+  happyCount += stats.happy;
+  if (stats.died > 0) failCount++;
+  updateScoreboard();
 
-    updateScoreboard();
-
-
-    if (failCount >= 3) {
- 
-      modalTitle.textContent = "Whoops, je bent ontslagen!";
-      modalText.textContent = `Door je keuzes zijn er te vaak mensen dood. Je moet herbeginnen.`;
-      modalBg.style.display = 'flex';
-
-  
-      closeModalBtn.onclick = () => {
-        modalBg.style.display = 'none';
-        restart();
-
-        closeModalBtn.onclick = () => {
-          modalBg.style.display = 'none';
-          goToNextScenario();
-        };
-      };
-      return;
-    }
-
-   
-    modalTitle.textContent = "Gevolg";
-    modalText.textContent = `${option.result}\n\n` +
-      `❌ Dode: ${died}, ⚪ Boze: ${angry}, ✅ Blije: ${happy}`;
-    
-    modalBg.style.display = 'flex';
+  if (failCount >= 3) {
+    showModal('Whoops, je bent ontslagen!',
+      'Door je keuzes zijn er te vaak mensen dood. Je moet herbeginnen.');
+    closeModalBtn.onclick = () => { modalBg.style.display = 'none'; restart(); };
+    return;
   }
+  showModal('Gevolg', `${resText}\n\n❌ Dode: ${stats.died} | ⚪ Boze: ${stats.angry} | ✅ Blije: ${stats.happy}`);
+  closeModalBtn.onclick = () => { modalBg.style.display = 'none'; nextScenario(); };
+}
 
-  function goToNextScenario() {
-    currentIndex++;
-    if (currentIndex < scenarios.length) {
-      loadScenario(currentIndex);
-    } else {
+/* ---------------- HULPFUNCTIES ---------------- */
+function showModal(t, txt) {
+  modalTitle.textContent = t;
+  modalText.textContent  = txt;
+  modalBg.style.display  = 'flex';
+}
+function updateScoreboard() {
+  diedCountSpan.textContent  = diedCount;
+  angryCountSpan.textContent = angryCount;
+  happyCountSpan.textContent = happyCount;
+}
+function nextScenario() {
+  currentIndex++;
+  if (currentIndex < scenarios.length) loadScenario(currentIndex);
+  else finishGame();
+}
+function finishGame() {
+  clearInterval(timerInterval);
+  mainContent.classList.add('hidden');
+  endScreen.classList.remove('hidden');
+  endResultText.innerHTML =
+    `Je eindscore:<br>❌ Doden: ${diedCount}<br>⚪ Boze mensen: ${angryCount}<br>✅ Blije mensen: ${happyCount}<br><br>`+
+    'Deze kleine quiz toont aan hoe stressvol de job van luchtverkeersleider is en hoeveel consequenties elke kleine beslissing kan hebben.<br>Alle vluchtnummers zijn echte vluchten.<br>Noah R 4NW3';
+}
+function restart() {
+  diedCount = angryCount = happyCount = failCount = 0;
+  currentIndex = 0;
+  updateScoreboard();
+  endScreen.classList.add('hidden');
+  mainContent.classList.remove('hidden');
+  loadScenario(currentIndex);
+}
 
-      showEndScreen();
-    }
-  }
-
-  function showEndScreen() {
-    mainContent.classList.add('hidden');
-    endScreen.classList.remove('hidden');
-    endResultText.innerHTML = `
-      Je eindscore is:<br>
-      ❌ Doden: ${diedCount}<br>
-      ⚪ Boze mensen: ${angryCount}<br>
-      ✅ Blije mensen: ${happyCount}<br><br>
-      Deze kleine quiz toont aan hoe stresvol de job van luchtverkeersleider is en hoeveel consequenties elke kleine beslissing kan hebben.
-      Alle vluchtnummers zijn echte vluchten.
-      Noah R 4NW3
-    `;
-  }
-
-  function updateScoreboard() {
-    diedCountSpan.textContent = diedCount;
-    angryCountSpan.textContent = angryCount;
-    happyCountSpan.textContent = happyCount;
-  }
-
-  function restart() {
-
-    diedCount = 0;
-    angryCount = 0;
-    happyCount = 0;
-    failCount = 0;
-    currentIndex = 0;
-
-
-    updateScoreboard();
-
-
-    endScreen.classList.add('hidden');
-
-    mainContent.classList.remove('hidden');
-
-
-    loadScenario(currentIndex);
-  }
-
-
-  window.restart = restart;
+/* ---------------- INITIALISATIE ---------------- */
+closeModalBtn.onclick = () => { modalBg.style.display = 'none'; };
+loadScenario(currentIndex);
 </script>
-
 </body>
 </html>
